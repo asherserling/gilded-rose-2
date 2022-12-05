@@ -29,7 +29,6 @@
        (filter #(= (:id %) id))
        first))
 
-
 (rf/reg-event-db
  :common/navigate
  (fn [db [_ match]]
@@ -53,11 +52,6 @@
  (fn [db [_ docs]]
    (assoc db :docs docs)))
 
-(rf/reg-event-db
- :set-shmendy
- (fn [db [_ shmendy]]
-   (assoc db :shmendy shmendy)))
-
 (rf/reg-event-fx
  :fetch-docs
  (fn [_ _]
@@ -65,47 +59,6 @@
                  :uri             "/docs"
                  :response-format (ajax/raw-response-format)
                  :on-success       [:set-docs]}}))
-
-
-(rf/reg-event-fx
- :fetch-shmendy
- (fn [_ _]
-   {:http-xhrio {:method          :get
-                 :uri             "/api/shmendy"
-                 :response-format (ajax/raw-response-format)
-                 :on-success      [:set-shmendy]}}))
-
-(rf/reg-event-db
- ::log-form
- (fn [db [_ new-val]]
-   (update-in db [:forms] conj new-val)))
-
-(rf/reg-event-db
- ::init-inventory
- (fn [db _]
-   (assoc db ::inventory [{:name "Sulfuras" :quality 2 :sell-in 10 :id "a"}
-                         {:name "Conjured" :quality 4 :sell-in 6 :id "b"}
-                         {:name "Lizzi" :quality 100 :sell-in "never"}])))
-
-(rf/reg-event-db
- ::remove-item-inventory
- (fn [db [_ item-id]]
-   (update-in db [::inventory] 
-              (fn [inventory]
-                (filter #(not (= item-id (:id %))) inventory)))))
-
-(rf/dispatch [::init-inventory])
-(rf/reg-sub
- ::inventory
- (fn [db]
-   (:inventory db)))
-@(rf/subscribe [::inventory])
-
-(comment)
-
-(comment
-  (let [my-map {:house {:rooms 2}}]
-    (update-in my-map [:house :rooms] inc)))
 
 (rf/reg-event-db
  :common/set-error
@@ -140,16 +93,6 @@
  :<- [:common/route]
  (fn [route _]
    (-> route :data :view)))
-
-(rf/reg-sub
- :docs
- (fn [db _]
-   (:docs db)))
-
-(rf/reg-sub
- :shmendy
- (fn [db _]
-   (:shmendy db)))
 
 (rf/reg-sub
  :common/error
