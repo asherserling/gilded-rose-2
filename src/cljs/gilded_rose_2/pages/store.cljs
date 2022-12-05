@@ -1,4 +1,4 @@
-(ns gilded-rose-2.store
+(ns gilded-rose-2.pages.store
   (:require [re-frame.core :as rf]
             [gilded-rose-2.notifications :as notifications]
             [gilded-rose-2.inventory :as inventory]

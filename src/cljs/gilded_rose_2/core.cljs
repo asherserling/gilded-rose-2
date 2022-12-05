@@ -6,7 +6,7 @@
    [gilded-rose-2.ajax :as ajax]
    [gilded-rose-2.settings :as settings]
    [gilded-rose-2.layout :refer [layout]]
-   [gilded-rose-2.store :refer [store]]
+   [gilded-rose-2.pages.store :refer [store]]
    [gilded-rose-2.transactions :as transactions]
    [gilded-rose-2.events]
    [gilded-rose-2.pages.settings :refer [settings]]
