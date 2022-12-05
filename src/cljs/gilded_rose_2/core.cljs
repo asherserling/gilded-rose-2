@@ -1,72 +1,41 @@
 (ns gilded-rose-2.core
   (:require
-    [day8.re-frame.http-fx]
-    [reagent.dom :as rdom]
-    [reagent.core :as r]
-    [re-frame.core :as rf]
-    [goog.events :as events]
-    [goog.history.EventType :as HistoryEventType]
-    [markdown.core :refer [md->html]]
-    [gilded-rose-2.ajax :as ajax]
-    [gilded-rose-2.events]
-    [reitit.core :as reitit]
-    [reitit.frontend.easy :as rfe]
-    [clojure.string :as string])
+   [reagent.dom :as rdom]
+   [reagent.core :as r]
+   [re-frame.core :as rf]
+   [gilded-rose-2.ajax :as ajax]
+   [gilded-rose-2.settings :as settings]
+   [gilded-rose-2.layout :refer [layout]]
+   [gilded-rose-2.store :refer [store]]
+   [gilded-rose-2.transactions :as transactions]
+   [gilded-rose-2.events]
+   [gilded-rose-2.pages.settings :refer [settings]]
+   [reitit.core :as reitit]
+   [reitit.frontend.easy :as rfe]
+   [goog.events :as events]
+   [goog.history.EventType :as HistoryEventType])
   (:import goog.History))
-
-(defn nav-link [uri title page]
-  [:a.navbar-item
-   {:href   uri
-    :class (when (= page @(rf/subscribe [:common/page-id])) :is-active)}
-   title])
-
-(defn navbar [] 
-  (r/with-let [expanded? (r/atom false)]
-              [:nav.navbar.is-info>div.container
-               [:div.navbar-brand
-                [:a.navbar-item {:href "/" :style {:font-weight :bold}} "gilded-rose-2"]
-                [:span.navbar-burger.burger
-                 {:data-target :nav-menu
-                  :on-click #(swap! expanded? not)
-                  :class (when @expanded? :is-active)}
-                 [:span][:span][:span]]]
-               [:div#nav-menu.navbar-menu
-                {:class (when @expanded? :is-active)}
-                [:div.navbar-start
-                 [nav-link "#/" "Home" :home]
-                 [nav-link "#/about" "About" :about]]]]))
-
-(defn about-page []
-  [:section.section>div.container>div.content
-   [:img {:src "/img/warning_clojure.png"}]])
-
-(defn home-page []
-  [:section.section>div.container>div.content
-   (when-let [docs @(rf/subscribe [:docs])]
-     [:div {:dangerouslySetInnerHTML {:__html (md->html docs)}}])])
-
-(defn page []
-  (if-let [page @(rf/subscribe [:common/page])]
-    [:div
-     [navbar]
-     [page]]))
 
 (defn navigate! [match _]
   (rf/dispatch [:common/navigate match]))
 
 (def router
   (reitit/router
-    [["/" {:name        :home
-           :view        #'home-page
-           :controllers [{:start (fn [_] (rf/dispatch [:page/init-home]))}]}]
-     ["/about" {:name :about
-                :view #'about-page}]]))
+   [["/" {:name :dashboard
+          :view #'store
+          :controllers [{:start #(rf/dispatch [::transactions/init-app])}]}]
+    ["settings" {:name :settings
+                 :view #'settings}]]))
 
 (defn start-router! []
   (rfe/start!
-    router
-    navigate!
-    {}))
+   router
+   navigate!
+   {}))
+
+(defn page []
+  (if-let [page @(rf/subscribe [:common/page])]
+    [layout page]))
 
 ;; -------------------------
 ;; Initialize app
@@ -78,8 +47,3 @@
   (start-router!)
   (ajax/load-interceptors!)
   (mount-components))
-
-(comment
-  (js/alert "hello")
-  
-  )

@@ -1,13 +1,14 @@
 (ns gilded-rose-2.handler
   (:require
-    [gilded-rose-2.middleware :as middleware]
-    [gilded-rose-2.layout :refer [error-page]]
-    [gilded-rose-2.routes.home :refer [home-routes]]
-    [reitit.ring :as ring]
-    [ring.middleware.content-type :refer [wrap-content-type]]
-    [ring.middleware.webjars :refer [wrap-webjars]]
-    [gilded-rose-2.env :refer [defaults]]
-    [mount.core :as mount]))
+   [gilded-rose-2.middleware :as middleware]
+   [gilded-rose-2.layout :refer [error-page]]
+   [gilded-rose-2.routes.home :refer [home-routes]]
+   [gilded-rose-2.routes.api :refer [api-routes]]
+   [reitit.ring :as ring]
+   [ring.middleware.content-type :refer [wrap-content-type]]
+   [ring.middleware.webjars :refer [wrap-webjars]]
+   [gilded-rose-2.env :refer [defaults]]
+   [mount.core :as mount]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
@@ -22,7 +23,8 @@
   :start
   (ring/ring-handler
     (ring/router
-      [(home-routes)])
+      [(home-routes)
+       (api-routes)])
     (ring/routes
       (ring/create-resource-handler
         {:path "/"})
