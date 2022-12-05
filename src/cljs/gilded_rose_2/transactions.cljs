@@ -3,7 +3,8 @@
             [gilded-rose-2.wallet :as wallet]
             [gilded-rose-2.notifications :as notifications]
             [re-frame.core :as re-frame]
-            [gilded-rose-2.settings :as settings]))
+            [gilded-rose-2.settings :as settings]
+            [gilded-rose-2.helpers :refer [dollar-formatter]]))
 
 (defn get-rate-item [item seller]
   (let [rate-key (condp = seller
@@ -17,9 +18,9 @@
 (defn make-sale-base-message [item price rate]
   (str
    "a " (:name item)
-   " at a rate of " rate " dollars for"
+   " at a rate of " (dollar-formatter rate) " dollars for"
    " each quality unit for a total of"
-   " $" price " dollars"))
+   " " (dollar-formatter price) " dollars"))
 
 (re-frame/reg-event-fx
  ::sell-item

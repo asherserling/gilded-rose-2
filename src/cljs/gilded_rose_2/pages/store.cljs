@@ -3,7 +3,8 @@
             [gilded-rose-2.notifications :as notifications]
             [gilded-rose-2.inventory :as inventory]
             [gilded-rose-2.transactions :as transactions]
-            [gilded-rose-2.wallet :as wallet]))
+            [gilded-rose-2.wallet :as wallet]
+            [gilded-rose-2.helpers :refer [dollar-formatter]]))
 
 (declare inventory
          inventory-table
@@ -25,7 +26,7 @@
           [:i.fas.fa-dollar-sign]]]]
        [:div.card-content.has-background-light
         [:p.is-size-2
-         balance]]])
+         (str "$" (dollar-formatter balance))]]])
 
     [:div.mt-5
      [notifications/notifications]]]
