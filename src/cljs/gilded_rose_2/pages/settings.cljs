@@ -35,9 +35,7 @@
                           (doseq [[key val] @form-state]
                             (rf/dispatch [::s/set-key key val]))
                           (rf/dispatch [::notifications/add-notification :success "Settings updated"])))}
-           "Save"]]])]]
-
-    [:div.box.mt-2]]])
+           "Save"]]])]]]])
 
 (defn input-number [label key form-state errors]
   [:div.field
