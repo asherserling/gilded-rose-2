@@ -18,8 +18,8 @@
 (defn make-sale-base-message [item price rate]
   (str
    "a " (:name item)
-   " at a rate of " (format-dollars rate) " dollars for"
-   " each quality unit for a total of"
+   " at a rate of " (format-dollars rate)
+   " for a total of"
    " " (format-dollars price) " dollars"))
 
 (re-frame/reg-event-fx
@@ -41,10 +41,9 @@
    (let [item (inventory/get-item ::inventory/supplier-inventory item-id)
          price (evaluate-item item :supplier)
          rate (get-rate-item item :supplier)
-         balance @(re-frame/subscribe [::wallet/wallet])
-         suficient-funds (>= balance price)]
+         balance @(re-frame/subscribe [::wallet/wallet])]
      {:fx (cond 
-            suficient-funds
+            (>= balance price)
             [[:dispatch [::inventory/remove-item ::inventory/supplier-inventory item-id]]
              [:dispatch [::inventory/add-item ::inventory/inventory item]]
              [:dispatch [::wallet/add-money (* -1 price)]]
@@ -75,18 +74,3 @@
          [:dispatch [::notifications/refresh]]
          [:dispatch [:refresh-history]]
          [:dispatch [::settings/refresh]]]}))
-
-(re-frame/reg-event-db
- :add-history
- (fn [db [_ item]]
-   (update db :history conj item)))
-
-(re-frame/reg-event-db
- :refresh-history
- (fn [db _]
-   (assoc db :history [])))
-
-(re-frame/reg-sub
- :history
- (fn [db _]
-   (:history db)))

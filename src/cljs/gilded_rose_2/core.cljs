@@ -4,7 +4,7 @@
    [reagent.core :as r]
    [re-frame.core :as rf]
    [gilded-rose-2.ajax :as ajax]
-   [gilded-rose-2.settings :as settings]
+   [gilded-rose-2.settings :as s]
    [gilded-rose-2.layout :refer [layout]]
    [gilded-rose-2.pages.store :refer [store]]
    [gilded-rose-2.transactions :as transactions]

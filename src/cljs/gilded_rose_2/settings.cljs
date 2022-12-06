@@ -37,3 +37,9 @@
  ::get-by-name
  (fn [db [_ name]]
    (get-in db [::settings name] (atom {}))))
+
+
+(rf/reg-event-db
+ ::unset-settings
+ (fn [db _]
+   (assoc db ::silly-settings nil)))

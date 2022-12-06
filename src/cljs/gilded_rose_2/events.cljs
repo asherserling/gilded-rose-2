@@ -7,28 +7,6 @@
 
 ;;dispatchers
 
-;; db
-(rf/reg-event-db
- ::refresh-db
- (fn [_ _]
-   {}))
-
-(rf/reg-event-db
- ::init-wallet
- (fn [db _]
-   (assoc db ::wallet 100)))
-
-(rf/reg-event-db
- ::add-to-wallet
- (fn [db [_ amount]]
-   (update db ::wallet + amount)))
-
-(defn get-item-by-id [db id]
-  (->> db
-       :inventory 
-       (filter #(= (:id %) id))
-       first))
-
 (rf/reg-event-db
  :common/navigate
  (fn [db [_ match]]

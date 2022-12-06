@@ -9,6 +9,7 @@
 (declare inventory
          inventory-table
          ballance
+         make-action-button
          supplier-inventory
          seller-inventory)
 
@@ -77,22 +78,20 @@
            [:td {:col-span (count headers)} "Sorry, we're all sold out"]]
           (for [{:keys [name quality sell-in id]} items]
             [:tr {:key id}
-             (map-el :td [name quality sell-in [action-button id]])]))]]]]))
+             (map-el :td [name quality sell-in [(make-action-button action-button) id]])]))]]]]))
 
 (defn seller-inventory []
-  (inventory
-   "Inventory"
-   ::inventory/inventory
-   (fn [item-id]
-     [:button.button.is-primary
-      {:on-click #(rf/dispatch [::transactions/sell-item item-id])}
-      "Sell"])))
+  (inventory "Inventory" ::inventory/inventory {:text "Buy"
+                                                :action ::transactions/sell-item
+                                                :color "is-primary"}))
 
 (defn supplier-inventory []
-  (inventory
-   "Supplier Inventory"
-   ::inventory/supplier-inventory
-   (fn [item-id]
-     [:button.button.is-info
-      {:on-click #(rf/dispatch [::transactions/buy-item item-id])}
-      "Buy"])))
+  (inventory "Supplier Inventory" ::inventory/supplier-inventory {:text "Sell"
+                                                                  :action ::transactions/buy-item
+                                                                  :color "is-secondary"}))
+
+(defn make-action-button [{:keys [text action color]}]
+  (fn [item-id]
+    [(keyword (str "button.button." color))
+     {:on-click #(rf/dispatch [action item-id])}
+     text]))
