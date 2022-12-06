@@ -40,22 +40,25 @@
 (defn input-number [label key form-state errors]
   [:div.field
    [:div.is-flex.is-flex-row.is-justify-content-space-between
-    [:label.label label]
-    (when (key @errors) [:div.tag.is-danger.is-light (key @errors)])]
+    [:label.label label]]
    [:div.control
     [:input.input
      {:type "number"
       :required true
-      :value (key @form-state)
+      :class (when (key @errors) :is-danger)
+      :value (key @form-state) 
       :on-change (fn [e]
                    (.preventDefault e)
                    (swap! form-state assoc key (-> e .-target .-value))
-                   (reset! errors (validate-state @form-state)))}]]])
+                   (reset! errors (validate-state @form-state)))}]
+    [:div.help.is-danger
+     {:style {:height "8px"}}
+     (when (key @errors) (key @errors))]]])
 
 (defn validate-state [form-state]
   (cond-> {}
     (<= (:supplier-rate form-state) 0) 
-    (assoc :supplier-rate "Supplier rate must be greater than zero")
+    (assoc :supplier-rate "Invalid") 
     
     (<= (:seller-rate   form-state) 0)
-    (assoc :seller-rate   "Seller rate must be greater than zero")))
+    (assoc :seller-rate   "Invalid")))
