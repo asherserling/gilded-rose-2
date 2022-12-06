@@ -4,28 +4,31 @@
    [reagent.core :as r]
    [re-frame.core :as rf]
    [gilded-rose-2.ajax :as ajax]
+   [day8.re-frame.http-fx]
    [gilded-rose-2.settings :as s]
    [gilded-rose-2.layout :refer [layout]]
    [gilded-rose-2.pages.store :refer [store]]
-   [gilded-rose-2.transactions :as transactions]
-   [gilded-rose-2.events]
    [gilded-rose-2.pages.settings :refer [settings]]
+   [gilded-rose-2.pages.daily :refer [daily-thing]]
+   [gilded-rose-2.transactions :as transactions]
+   [gilded-rose-2.events] 
    [reitit.core :as reitit]
    [reitit.frontend.easy :as rfe]
-   [goog.events :as events]
-   [goog.history.EventType :as HistoryEventType])
-  (:import goog.History))
+   [goog.events :as events]))
 
 (defn navigate! [match _]
   (rf/dispatch [:common/navigate match]))
 
 (def router
   (reitit/router
-   [["/" {:name :dashboard
-          :view #'store
+   [["/" {:name        :dashboard
+          :view        #'store
           :controllers [{:start #(rf/dispatch [::transactions/init-app])}]}]
     ["settings" {:name :settings
-                 :view #'settings}]]))
+                 :view #'settings}]
+    ["daily" {:name :daily
+              :view #'daily-thing
+              :controllers [{:start #(rf/dispatch [:fetch-inventory])}]}]]))
 
 (defn start-router! []
   (rfe/start!

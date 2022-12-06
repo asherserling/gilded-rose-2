@@ -29,7 +29,6 @@
  (fn [db [_ inventory-key item-id]]
    (update db inventory-key (partial filter #(not (= (:id %) item-id))))))
 
-
 ;; supscriptions
 (re-frame/reg-sub
  ::inventory

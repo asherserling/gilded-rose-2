@@ -30,13 +30,14 @@
 (defn nav-bar []
   [:div.box.px-4.py-4.is-flex.is-flex-direction-row.is-justify-content-space-between
    [:div.is-flex.is-flex-direction-row
-    [nav-button (rfe/href :dashboard) "Dashboard" :dashboard "has-background-warning-light"]
-    [nav-button (rfe/href :settings) "Settings" :settings "has-background-primary-light"]]
+    [nav-button "Dashboard" :dashboard "has-background-warning-light"]
+    [nav-button "Settings" :settings "has-background-primary-light"]
+    [nav-button "Daily" :daily "has-background-info-light"]]
    [refresh-button]])
 
-(defn nav-button [uri text page background]
+(defn nav-button [text page background]
   [:a
-   {:href uri}
+   {:href (rfe/href page)}
    [(keyword (str "button.button.mr-5." background))
     {:class (when (= page @(rf/subscribe [:common/page-id])) :is-active)}
     text]])

@@ -73,12 +73,12 @@
              (map-el :td [name quality sell-in [(make-action-button action-button) id]])]))]]]]))
 
 (defn seller-inventory []
-  (inventory "Inventory" ::inventory/inventory {:text "Buy"
+  (inventory "Inventory" ::inventory/inventory {:text "Sell"
                                                 :action ::transactions/sell-item
                                                 :color "primary"}))
 
 (defn supplier-inventory []
-  (inventory "Supplier Inventory" ::inventory/supplier-inventory {:text "Sell"
+  (inventory "Supplier Inventory" ::inventory/supplier-inventory {:text "Buy"
                                                                   :action ::transactions/buy-item
                                                                   :color "info"}))
 

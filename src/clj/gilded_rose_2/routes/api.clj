@@ -2,8 +2,7 @@
   (:require
    [gilded-rose-2.layout :as layout]
    [clojure.java.io :as io]
-   [gilded-rose-2.middleware :as middleware]
-   [ring.util.response]
+   [gilded-rose-2.middleware :as middleware] 
    [ring.util.http-response :as response]))
 
 (defn shmendy [_]

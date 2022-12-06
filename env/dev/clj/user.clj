@@ -6,7 +6,7 @@
     [clojure.spec.alpha :as s]
     [expound.alpha :as expound]
     [mount.core :as mount]
-    [gilded-rose-2.core :refer [start-app]]))
+    [gilded-rose-2.core :refer [start-app http-server]]))
 
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
 
@@ -28,5 +28,3 @@
   []
   (stop)
   (start))
-
-
