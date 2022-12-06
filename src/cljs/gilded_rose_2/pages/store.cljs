@@ -4,11 +4,11 @@
             [gilded-rose-2.inventory :as inventory]
             [gilded-rose-2.transactions :as transactions]
             [gilded-rose-2.wallet :as wallet]
-            [gilded-rose-2.helpers :refer [format-dollars]]))
+            [gilded-rose-2.helpers :refer [format-dollars]]
+            [reagent.core :as r]))
 
 (declare inventory
          inventory-table
-         ballance
          make-action-button
          supplier-inventory
          seller-inventory)
@@ -43,14 +43,6 @@
        {:style {:min-height "500px"}}
        [supplier-inventory]]]]]])
 
-(defn ballance []
-  (let [balance @(rf/subscribe [::wallet/wallet])]
-    [:div
-     [:h1.title
-      "Balance"]
-     [:p.is-size-2
-      (str "$" balance)]]))
-
 (defn inventory [title subscription action-button]
   (let [items @(rf/subscribe [subscription])]
     [:div
@@ -83,15 +75,24 @@
 (defn seller-inventory []
   (inventory "Inventory" ::inventory/inventory {:text "Buy"
                                                 :action ::transactions/sell-item
-                                                :color "is-primary"}))
+                                                :color "primary"}))
 
 (defn supplier-inventory []
   (inventory "Supplier Inventory" ::inventory/supplier-inventory {:text "Sell"
                                                                   :action ::transactions/buy-item
-                                                                  :color "is-secondary"}))
+                                                                  :color "info"}))
+
+(defn set-temporarily [an-atom val milliseconds]
+  (let [old-val @an-atom]
+    (reset! an-atom val)
+    (js/setTimeout #(reset! an-atom old-val) milliseconds)))
 
 (defn make-action-button [{:keys [text action color]}]
-  (fn [item-id]
-    [(keyword (str "button.button." color))
-     {:on-click #(rf/dispatch [action item-id])}
-     text]))
+  (let [loading (r/atom false)]
+   (fn [item-id]
+    [(keyword (str "button.button.is-" color))
+     {:class (when @loading :is-loading)
+      :on-click (fn []
+                  (set-temporarily loading true 500)
+                  (rf/dispatch [action item-id]))}
+     text])))
