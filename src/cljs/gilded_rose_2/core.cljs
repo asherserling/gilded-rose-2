@@ -11,6 +11,7 @@
    [gilded-rose-2.pages.settings :refer [settings]]
    [gilded-rose-2.pages.daily :refer [daily-thing]]
    [gilded-rose-2.transactions :as transactions]
+   [gilded-rose-2.api.inventory :as inv]
    [gilded-rose-2.events] 
    [reitit.core :as reitit]
    [reitit.frontend.easy :as rfe]
@@ -22,13 +23,12 @@
 (def router
   (reitit/router
    [["/" {:name        :dashboard
-          :view        #'store
-          :controllers [{:start #(rf/dispatch [::transactions/init-app])}]}]
+          :view        #'store}]
     ["settings" {:name :settings
                  :view #'settings}]
     ["daily" {:name :daily
               :view #'daily-thing
-              :controllers [{:start #(rf/dispatch [:fetch-inventory])}]}]]))
+              :controllers [{:start #(rf/dispatch [::inv/fetch-inventory])}]}]]))
 
 (defn start-router! []
   (rfe/start!
@@ -49,4 +49,5 @@
 (defn init! []
   (start-router!)
   (ajax/load-interceptors!)
+  (rf/dispatch [::transactions/init-app])
   (mount-components))

@@ -2,8 +2,7 @@
   (:require
    [gilded-rose-2.middleware :as middleware]
    [gilded-rose-2.layout :refer [error-page]]
-   [gilded-rose-2.routes.home :refer [home-routes]]
-   [gilded-rose-2.routes.api :refer [api-routes]]
+   [gilded-rose-2.routes.home :refer [home-routes]] 
    [reitit.ring :as ring]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.webjars :refer [wrap-webjars]]

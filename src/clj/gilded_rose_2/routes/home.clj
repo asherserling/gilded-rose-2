@@ -18,7 +18,9 @@
   (layout/render request "home.html"))
 
 (defn inventory [_]
-  {:body (:inventory @data-store)})
+  {:body (do
+           (Thread/sleep 250)
+           (:inventory @data-store))})
 
 (defn increment-day! [_]
   {:body (do (swap! data-store update :inventory update-inventory)
