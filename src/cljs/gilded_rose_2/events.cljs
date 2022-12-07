@@ -41,7 +41,7 @@
 (defn create-inventory-load-effect [uri]
   {:http-xhrio {:method          :get
                 :uri             uri
-                :response-format (ajax/json-response-format)
+                :response-format (ajax/json-response-format {:keywords? true})
                 :on-success      [:set-inventory]}})
 
 (rf/reg-event-fx
