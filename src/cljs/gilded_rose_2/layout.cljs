@@ -3,11 +3,11 @@
             [reagent.core :as r]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as rfe]
-            [gilded-rose-2.transactions :as transactions]))
+            [gilded-rose-2.transactions :as transactions]
+            [gilded-rose-2.helpers :refer [loading-button]]))
 
 (declare hero nav-bar 
-         nav-button
-         refresh-button)
+         nav-button)
 
 (defn layout [content]
   [:<>
@@ -33,7 +33,7 @@
     [nav-button "Dashboard" :dashboard "has-background-warning-light"]
     [nav-button "Settings" :settings "has-background-primary-light"]
     [nav-button "Daily" :daily "has-background-info-light"]]
-   [refresh-button]])
+   [loading-button "Refresh" #(rf/dispatch [::transactions/refresh]) "has-background-info-light"]])
 
 (defn nav-button [text page background]
   [:a
@@ -41,14 +41,3 @@
    [(keyword (str "button.button.mr-5." background))
     {:class (when (= page @(rf/subscribe [:common/page-id])) :is-active)}
     text]])
-
-(defn refresh-button []
-  (let [loading (r/atom false)]
-    (fn []
-      [:button.button.has-background-info-light
-       {:class (when @loading :is-loading)
-        :on-click (fn []
-                    (rf/dispatch [::transactions/refresh])
-                    (reset! loading true)
-                    (js/setTimeout #(reset! loading false) 300))}
-       "Refresh"])))

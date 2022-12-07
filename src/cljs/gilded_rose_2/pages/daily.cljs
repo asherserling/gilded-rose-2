@@ -1,25 +1,20 @@
 (ns gilded-rose-2.pages.daily
-  (:require [re-frame.core :as rf] 
-            [gilded-rose-2.api.api :as api]
-            [gilded-rose-2.inventory :as inventory]))
+  (:require             [re-frame.core :as rf]
+                        [gilded-rose-2.api.api :as api]
+                        [gilded-rose-2.helpers :refer [loading-button]]))
 
-(defn make-load-button-attributes [k]
-  {:on-click #(rf/dispatch [k])
-   :class (when (:is-loading @(rf/subscribe [k])) :is-loading)})
+(defn daily-thing []
+  [:div.columns
 
-(defn daily-thing [] 
-  [:div.columns 
-   
    [:div.column.is-one-half.mx-auto
     [:div.box
      [:div.is-flex.is-justify-content-end.pb-4
-      [:button.button.is-primary.mr-2
-       (make-load-button-attributes ::api/increment-day) 
-       "Increment Day"]
-      [:button.button.is-warning
-       (make-load-button-attributes ::api/reset-inventory)
-       "Reset"]] 
-     
+
+      [:div.mr-2
+       [loading-button "Increment Day" #(rf/dispatch [::api/increment-day]) "is-primary"]]
+      [:div
+       [loading-button "Reset" #(rf/dispatch [::api/reset-inventory]) "is-warning"]]]
+
      [:div.is-flex.is-justify-content-center.pb-6
       {:style {:font-size "1.4em"}}
       (let [inventory @(rf/subscribe [::api/inventory])]
@@ -27,7 +22,7 @@
          [:thead
           [:tr
            [:th "Name"] [:th "Quality"] [:th "Sell In"]]]
-         
+
          [:tbody
           (cond
             (:is-loading inventory) [:tr
@@ -39,7 +34,7 @@
                                              [:td
                                               {:col-span 3}
                                               "There are no items in the inventory"]]
-            
+
             :else
             (for [{:keys [name quality sell-in id]} (:data inventory)]
               [:tr
