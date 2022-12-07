@@ -29,7 +29,9 @@
                  :view #'settings}]
     ["daily" {:name :daily
               :view #'daily-thing
-              :controllers [{:start #(rf/dispatch [::api/inventory])}]}]]))
+              :controllers [{:start (fn [] 
+                                      (when (not (:data @(rf/subscribe [::api/inventory])))
+                                        (rf/dispatch [::api/inventory])))}]}]]))
 
 (defn start-router! []
   (rfe/start!
