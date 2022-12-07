@@ -7,7 +7,7 @@
     ([a-keyword uri & other-events]
      (fn [{:keys [db]} _]
        {:http-xhrio {:method          :get
-                     :uri             uri
+                     :uri             (str "/api/" uri)
                      :response-format (ajax/json-response-format {:keywords? true})
                      :on-success      (into [] (cons ::on-success-fetch (conj other-events a-keyword)))}
         :db (-> db
@@ -27,7 +27,7 @@
                     (for [event other-events]
                       [:dispatch (into [] (conj event the-data))]))}))) 
   
-  (rf/reg-event-db 
+  (rf/reg-event-db
    ::save-data
    (fn [db [_ a-keyword data]]
      (-> db
@@ -43,7 +43,7 @@
   
   (rf/reg-event-fx
    ::inventory
-   (make-fetch-data-effect ::inventory "/api/inventory"))
+   (make-fetch-data-effect ::inventory "inventory"))
   
   (rf/reg-sub
    ::inventory
@@ -54,7 +54,7 @@
   
   (rf/reg-event-fx
    ::increment-day
-   (make-fetch-data-effect ::increment-day "/api/increment-day" [::save-data ::inventory])) 
+   (make-fetch-data-effect ::increment-day "increment-day" [::save-data ::inventory])) 
   
   (rf/reg-sub
    ::increment-day
@@ -65,7 +65,7 @@
   
   (rf/reg-event-fx
    ::reset-inventory
-   (make-fetch-data-effect ::reset-inventory "/api/reset-inventory" [::save-data ::inventory]))
+   (make-fetch-data-effect ::reset-inventory "reset-inventory" [::save-data ::inventory]))
   
   (rf/reg-sub
    ::reset-inventory

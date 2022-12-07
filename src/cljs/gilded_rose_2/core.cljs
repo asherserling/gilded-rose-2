@@ -12,6 +12,7 @@
    [gilded-rose-2.pages.daily :refer [daily-thing]]
    [gilded-rose-2.transactions :as transactions]
    [gilded-rose-2.api.inventory :as inv]
+   [gilded-rose-2.api.api :as api]
    [gilded-rose-2.events] 
    [reitit.core :as reitit]
    [reitit.frontend.easy :as rfe]
@@ -28,7 +29,7 @@
                  :view #'settings}]
     ["daily" {:name :daily
               :view #'daily-thing
-              :controllers [{:start #(rf/dispatch [::inv/fetch-inventory])}]}]]))
+              :controllers [{:start #(rf/dispatch [::api/inventory])}]}]]))
 
 (defn start-router! []
   (rfe/start!
