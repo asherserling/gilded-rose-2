@@ -10,8 +10,7 @@
                      :uri             (str "/api/" uri)
                      :response-format (ajax/json-response-format {:keywords? true})
                      :on-success      (into [] (cons ::on-success-fetch (conj other-events a-keyword)))}
-        :db (-> db
-                (assoc-in [a-keyword :is-loading] true))})))
+        :db (assoc-in db [a-keyword :is-loading] true)})))
   
   (rf/reg-event-fx
    ::on-success-fetch
@@ -41,33 +40,29 @@
   
   ;; ---------------------------
   
-  (rf/reg-event-fx
-   ::inventory
-   (make-fetch-data-effect ::inventory "inventory"))
+  (let [inventory-routes (->> [{:name ::inventory
+                                :uri "inventory"}
+
+                               {:name ::increment-day
+                                :uri "increment-day"
+                                :events [[::save-data ::inventory]]}
+
+                               {:name ::reset-inventory
+                                :uri "reset-inventory"
+                                :events [[::save-data ::inventory]]}]
+
+                              (map (fn [route]
+                                     (if-not (:events route)
+                                       (assoc route :events [])
+                                       route))))]
+    
+    (doseq [{:keys [name uri events]} inventory-routes]
+      (rf/reg-event-fx
+       name
+       (apply make-fetch-data-effect (concat [name uri] events)))
+      
+      (rf/reg-sub
+       name
+       (fn [db _]
+         (name db)))))
   
-  (rf/reg-sub
-   ::inventory
-   (fn [db _]
-     (::inventory db)))
-  
-  ;; ---------------------------
-  
-  (rf/reg-event-fx
-   ::increment-day
-   (make-fetch-data-effect ::increment-day "increment-day" [::save-data ::inventory])) 
-  
-  (rf/reg-sub
-   ::increment-day
-   (fn [db _]
-    (::increment-day db)))
-  
-  ;; ---------------------------
-  
-  (rf/reg-event-fx
-   ::reset-inventory
-   (make-fetch-data-effect ::reset-inventory "reset-inventory" [::save-data ::inventory]))
-  
-  (rf/reg-sub
-   ::reset-inventory
-   (fn [db _]
-     (::reset-inventory db)))
