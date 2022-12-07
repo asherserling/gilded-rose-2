@@ -8,6 +8,12 @@
    [ring.util.response]
    [ring.util.http-response :as response]))
 
+(def make-fresh-inventory
+  (let [current-id (atom 0)]
+    (fn []
+      (map #(assoc % :id (swap! current-id inc)) 
+           initial-inventory))))
+
 (defn home-page [request] 
   (layout/render request "home.html"))
 
@@ -20,7 +26,7 @@
 
 (defn reset-inventory! [_]
   {:body (do
-           (swap! data-store assoc :inventory initial-inventory)
+           (swap! data-store assoc :inventory (make-fresh-inventory))
            (:inventory @data-store))})
 
 (defn home-routes []
