@@ -1,27 +1,22 @@
 (ns gilded-rose-2.pages.daily
-  (:require [re-frame.core :as rf]
-            [gilded-rose-2.api.inventory :as inv]
+  (:require [re-frame.core :as rf] 
             [gilded-rose-2.api.api :as api]))
+
+(defn make-load-button-attributes [k]
+  {:on-click #(rf/dispatch [k])
+   :class (when (:is-loading @(rf/subscribe [k])) :is-loading)})
 
 (defn daily-thing [] 
   [:div.columns 
-   
-   ;; :class (when (:is-loading @(rf/subscribe [::api/inventory])) :is-loading)
-   
-   [:div.box
-    [:button.button
-     {
-      :on-click #(rf/dispatch [::api/fetch-inventory])}
-     "Click me"]]
    
    [:div.column.is-one-half.mx-auto
     [:div.box
      [:div.is-flex.is-justify-content-end.pb-4
       [:button.button.is-primary.mr-2
-       {:on-click #(rf/dispatch [::api/increment-day])}
+       (make-load-button-attributes ::api/increment-day) 
        "Increment Day"]
       [:button.button.is-warning
-       {:on-click #(rf/dispatch [::inv/reset-inventory])}
+       (make-load-button-attributes ::api/reset-inventory)
        "Reset"]] 
      
      [:div.is-flex.is-justify-content-center.pb-6
