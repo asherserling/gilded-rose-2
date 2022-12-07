@@ -68,9 +68,12 @@
         (if (= 0 (count items))
           [:tr
            [:td {:col-span (count headers)} "Sorry, we're all sold out"]]
-          (for [{:keys [name quality sell-in id]} items]
-            [:tr {:key id}
-             (map-el :td [name quality sell-in [(make-action-button action-button) id]])]))]]]]))
+          (for [{:keys [name quality sell-in id]} items] 
+            [:tr {:key id} 
+             [:td name]
+             [:td quality]
+             [:td sell-in]
+             [:td [(make-action-button action-button) id]]]))]]]]))
 
 (defn seller-inventory []
   (inventory "Inventory" ::inventory/inventory {:text "Sell"
