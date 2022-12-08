@@ -1,10 +1,11 @@
 (ns gilded-rose-2.layout
-  (:require [goog.string :as gstring]
+  (:require [clojure.string :as str]
+            [goog.string :as gstring]
             [reagent.core :as r]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as rfe]
             [gilded-rose-2.transactions :as transactions]
-            [gilded-rose-2.helpers :refer [loading-button]]))
+            [gilded-rose-2.helpers :refer [loading-button true-timeout-false]]))
 
 (declare hero nav-bar 
          nav-button)
@@ -36,8 +37,12 @@
    [loading-button "Refresh" #(rf/dispatch [::transactions/refresh]) "has-background-info-light"]])
 
 (defn nav-button [text page background]
-  [:a
-   {:href (rfe/href page)}
-   [(keyword (str "button.button.mr-5." background))
-    {:class (when (= page @(rf/subscribe [:common/page-id])) :is-active)}
-    text]])
+  (let [[is-loading set-is-loading] (true-timeout-false)]
+   (fn []
+     [:a
+      {:href (rfe/href page)}
+      [(keyword (str "button.button.mr-5." background))
+       {:class (str/join " " [(when (= page @(rf/subscribe [:common/page-id])) "is-active")
+                              (when @is-loading "is-loading")])
+        :on-click set-is-loading}
+       text]])))

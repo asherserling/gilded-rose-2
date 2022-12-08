@@ -8,8 +8,8 @@
 
    [:div.column.is-one-half.mx-auto
     [:div.box
+     
      [:div.is-flex.is-justify-content-end.pb-4
-
       [:div.mr-2
        [loading-button "Increment Day" #(rf/dispatch [::api/increment-day]) "is-primary"]]
       [:div
@@ -20,7 +20,7 @@
       (let [inventory @(rf/subscribe [::api/inventory])]
         [:table.table.is-bordered.is-hoverable.is-striped
          [:thead
-          [:tr
+          [:tr.is-size-4
            [:th "Name"] [:th "Quality"] [:th "Sell In"]]]
 
          [:tbody
@@ -39,4 +39,12 @@
             (for [{:keys [name quality sell-in id]} (:data inventory)]
               [:tr
                {:key id}
-               [:td name] [:td quality] [:td sell-in]]))]])]]]])
+               [:td.is-italic.is-flex.is-justify-content-space-between
+                [:div.pr-6
+                 name]
+                [:div
+                 (str "  (" id ")")]] 
+               [:td.has-text-weight-bold.has-text-right
+                quality]
+               [:td.has-text-weight-bold.has-text-right 
+                sell-in]]))]])]]]])

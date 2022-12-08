@@ -5,13 +5,19 @@
   (let [formatter (.NumberFormat js/Intl. "en-Us" {:style "currency" :currency "USD"})]
     (.format formatter amount)))
 
-(defn loading-button [text action color]
+(defn true-timeout-false []
   (let [is-loading (r/atom false)]
+    [is-loading
+     (fn []
+       (reset! is-loading true)
+       (js/setTimeout #(reset! is-loading false) 250))]))
+
+(defn loading-button [text action color]
+  (let [[is-loading set-is-loading] (true-timeout-false)]
     (fn []
       [(keyword (str ":button.button." color))
        {:on-click (fn []
                     (action)
-                    (reset! is-loading true)
-                    (js/setTimeout #(reset! is-loading false) 250))
+                    (set-is-loading))
         :class (when @is-loading :is-loading)}
-       text])))
+      text])))
